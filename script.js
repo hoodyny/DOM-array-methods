@@ -13,7 +13,7 @@ addUser()
 
 // format number as money - https://stackoverflow.com/questions/149055/how-to-format-numbers-as-currency-strings
 function formatNumber (number) {
-    return number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    return '$' + number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
 // adds new user and him wealth on the page
@@ -54,11 +54,34 @@ function updateDOM(providedData = data) {
     providedData.forEach(item => {
     const element = document.createElement('div');
     element.classList.add('person');
-    element.innerHTML = `<strong>${item.name}</strong> $ ${formatNumber(item.money)}`;
+    element.innerHTML = `<strong>${item.name}</strong> ${formatNumber(item.money)}`;
     main.appendChild(element)
     });
 }
 
+// Shows only millinaires
+function onlyMil () {
+    data = data.filter(user => user.money > 1000000)
+
+    updateDOM()
+}
+
+// Sorts from richest to poorest
+function richest () {
+    data.sort((a,b) => b.money - a.money)
+    
+    updateDOM()
+}
+
+function calculate() {
+    const all = data.reduce((cur,item) => (cur += item.money), 0)
+
+    const total = `<div><strong>Total wealth:</strong> ${all}</div>`
+    main.innerHTML += `<div class="person total"><strong>Total wealth:</strong> ${formatNumber(all)}</div>`
+}
 
 user.addEventListener('click', addUser)
 doubleMoney.addEventListener('click', double)
+filter.addEventListener('click', onlyMil)
+sort.addEventListener('click', richest)
+calculateAll.addEventListener('click', calculate)
